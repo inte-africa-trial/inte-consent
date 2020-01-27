@@ -1,0 +1,4 @@
+[run]
+include = inte_consent/*
+omit = inte_consent/tests/*
+branch = 1
