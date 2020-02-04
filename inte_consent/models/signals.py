@@ -1,14 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from edc_action_item import delete_action_item, ActionItemDeleteError
-from edc_constants.constants import YES
 from edc_randomization.site_randomizers import site_randomizers
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from inte_screening.models import SubjectScreening
 from inte_subject.models import SubjectVisit
 
-from ..action_items import ReconsentAction
 from .subject_consent import SubjectConsent
 
 
@@ -27,8 +24,7 @@ def subject_consent_on_post_save(sender, instance, raw, created, **kwargs):
             _, schedule = site_visit_schedules.get_by_onschedule_model(
                 "inte_prn.onschedule"
             )
-            schedule.refresh_schedule(
-                subject_identifier=instance.subject_identifier)
+            schedule.refresh_schedule(subject_identifier=instance.subject_identifier)
         else:
             subject_screening = SubjectScreening.objects.get(
                 screening_identifier=instance.screening_identifier
@@ -57,18 +53,6 @@ def subject_consent_on_post_save(sender, instance, raw, created, **kwargs):
                 onschedule_datetime=instance.consent_datetime,
             )
 
-        # create / delete action for reconsent
-        if instance.completed_by_next_of_kin == YES:
-            ReconsentAction(subject_identifier=instance.subject_identifier)
-        else:
-            try:
-                delete_action_item(
-                    action_cls=ReconsentAction,
-                    subject_identifier=instance.subject_identifier,
-                )
-            except ActionItemDeleteError:
-                pass
-
 
 @receiver(
     post_delete,
@@ -86,8 +70,7 @@ def subject_consent_on_post_delete(sender, instance, using, **kwargs):
     ).exists():
         raise ValidationError("Unable to delete consent. Visit data exists.")
 
-    _, schedule = site_visit_schedules.get_by_onschedule_model(
-        "inte_prn.onschedule")
+    _, schedule = site_visit_schedules.get_by_onschedule_model("inte_prn.onschedule")
     schedule.take_off_schedule(
         subject_identifier=instance.subject_identifier,
         offschedule_datetime=instance.consent_datetime,
