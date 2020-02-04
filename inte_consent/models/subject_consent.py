@@ -1,14 +1,13 @@
 from django.apps import apps as django_apps
 from django.db import models
-from django_crypto_fields.fields import EncryptedCharField
 from edc_consent.field_mixins import IdentityFieldsMixin
 from edc_consent.field_mixins import ReviewFieldsMixin, PersonalFieldsMixin
 from edc_consent.field_mixins import SampleCollectionFieldsMixin, CitizenFieldsMixin
 from edc_consent.field_mixins import VulnerabilityFieldsMixin
 from edc_consent.managers import ConsentManager
 from edc_consent.model_mixins import ConsentModelMixin
-from edc_constants.choices import YES_NO, GENDER
-from edc_constants.constants import NOT_APPLICABLE, NO
+from edc_constants.choices import GENDER
+from edc_constants.constants import NOT_APPLICABLE
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
 from edc_identifier.subject_identifier import SubjectIdentifier as BaseSubjectIdentifier
 from edc_model.models import BaseUuidModel
@@ -62,17 +61,7 @@ class SubjectConsent(
     )
 
     gender = models.CharField(
-        verbose_name="Gender",
-        choices=GENDER,
-        max_length=1,
-        null=True,
-        blank=False,
-    )
-
-    hospital_identifier = EncryptedCharField(unique=True, blank=False)
-
-    completed_by_next_of_kin = models.CharField(
-        max_length=10, default=NO, choices=YES_NO, editable=False
+        verbose_name="Gender", choices=GENDER, max_length=1, null=True, blank=False,
     )
 
     on_site = CurrentSiteManager()

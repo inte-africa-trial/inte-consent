@@ -18,13 +18,16 @@ class SubjectConsentForm(
         widget=forms.TextInput(attrs={"readonly": "readonly"}),
     )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        return cleaned_data
+
     def clean_gender_of_consent(self):
+        """Limited by options on form."""
         return None
 
     def clean_guardian_and_dob(self):
-        return None
-
-    def clean_identity_with_unique_fields(self):
+        """Minors not included in this trial"""
         return None
 
     class Meta:
@@ -33,7 +36,7 @@ class SubjectConsentForm(
         help_texts = {
             "identity": (
                 "Use Country ID Number, Passport number, driver's license "
-                "number or Country ID receipt number"
+                "number, Mobile, etc"
             ),
             "witness_name": (
                 "Required only if participant is illiterate. "
