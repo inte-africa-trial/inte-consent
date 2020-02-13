@@ -36,6 +36,7 @@ def subject_consent_on_post_save(sender, instance, raw, created, **kwargs):
             )
 
             # randomize
+            # TODO: should get randomizer name "default" from model or Consent object
             site_randomizers.randomize(
                 "default",
                 subject_identifier=instance.subject_identifier,
