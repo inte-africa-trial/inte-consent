@@ -14,6 +14,7 @@ v1 = Consent(
     age_is_adult=18,
     age_max=110,
     gender=[MALE, FEMALE],
+    # randomizer_name="default",
 )
 
 site_consents.register(v1)
