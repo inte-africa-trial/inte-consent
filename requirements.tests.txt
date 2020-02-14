@@ -41,4 +41,5 @@ inte_screening
 inte_sites
 inte_subject
 inte_visit_schedule
+inte-edc
 model-bakery
